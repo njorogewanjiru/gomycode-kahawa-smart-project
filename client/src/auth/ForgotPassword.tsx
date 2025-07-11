@@ -6,7 +6,7 @@ export function ForgotPassword() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // 📩 Trigger reset link email logic here
+        // reset link email logic
         setSubmitted(true);
     };
 

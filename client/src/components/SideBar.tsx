@@ -11,7 +11,8 @@ const SideBar = () => {
   ];
 
   return (
-    <aside className="bg-[#3b2f2f] text-[#f5efe6] w-64 min-h-screen py-8 px-6 hidden md:block shadow-lg">
+    <aside className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-gray-700
+w-64 min-h-screen py-8 px-6 hidden md:block shadow-lg">
       <div className="text-2xl font-bold mb-10 text-center tracking-wide">
 
       </div>
