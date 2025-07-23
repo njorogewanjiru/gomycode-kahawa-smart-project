@@ -1,8 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Info, Trees } from "lucide-react";
+import { useFarm } from "../context/FarmContext";
 
 export default function Navbar() {
   const location = useLocation();
+  const { currentFarm } = useFarm();
 
   const navLinkClasses = (path: string) =>
     `flex items-center gap-1 px-3 py-2 text-sm font-medium transition ${
@@ -12,8 +14,8 @@ export default function Navbar() {
     }`;
 
   return (
-    <nav className="w-full shadow-sm ">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3 relative">
+    <nav className="w-full shadow-sm">
+      <div className="max-w-7xl bg-gradient-to-t from-emerald-600 via-emerald-500 to-slate-700 mx-auto flex items-center justify-between px-6 py-3 relative">
         {/* Left links */}
         <div className="flex gap-4">
           <Link to="/" className={navLinkClasses("/")}>
@@ -30,15 +32,15 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Centered project title */}
+        {/* Center title */}
         <div className="absolute left-1/2 transform -translate-x-1/2">
-          <h1 className="text-xl font-bold text-[#3b2f2f] tracking-wide">
-            Kahawa Smart
-          </h1>
+          <h1 className="text-4xl font-bold text-yellow-100">Kahawa Smart</h1>
         </div>
 
-        {/* Right spacer for layout balance */}
-        <div className="w-28"></div>
+        {/* Right: Selected Farm */}
+        <div className="text-sm text-white font-semibold w-28 text-right truncate">
+          {currentFarm ? currentFarm.name : ""}
+        </div>
       </div>
     </nav>
   );

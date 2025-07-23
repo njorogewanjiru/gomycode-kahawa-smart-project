@@ -1,6 +1,7 @@
 
 export interface User {
   id: string;
+  _id?: string; // for compatibility with backend data
   name: string;
   email: string;
   role: "admin" | "farmer" | "worker";
