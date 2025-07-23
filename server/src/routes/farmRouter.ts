@@ -1,12 +1,13 @@
-import express, { Request, Response, NextFunction } from "express";
-import Farm from "../models/Farm"; 
+import express from "express";
+import Farm from "../models/farm";
 
 const router = express.Router();
 
 // ✅ Get all farms
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/", async (req, res) => {
   try {
-    res.json((await Farm.find().sort({ createdAt: -1 })));
+    const farms = await Farm.find().sort({ createdAt: -1 });
+    res.json(farms);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error while fetching farms." });
@@ -14,8 +15,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 });
 
 // ✅ Create a farm
-router.post("/api/farms", (req: express.Request, res: express.Response, next: express.NextFunction) => {
-
+router.post("/", async (req, res) => {
   try {
     const { name, area } = req.body;
     if (!name) {
@@ -32,7 +32,7 @@ router.post("/api/farms", (req: express.Request, res: express.Response, next: ex
 });
 
 // ✅ Update a farm
-router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
+router.put("/:id", async (req, res) => {
   try {
     const { name, area } = req.body;
     const updatedFarm = await Farm.findByIdAndUpdate(
@@ -53,7 +53,7 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
 });
 
 // ✅ Delete a farm
-router.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
+router.delete("/:id", async (req, res) => {
   try {
     const deleted = await Farm.findByIdAndDelete(req.params.id);
     if (!deleted) {

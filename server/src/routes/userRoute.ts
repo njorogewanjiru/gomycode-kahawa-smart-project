@@ -1,103 +1,34 @@
-import { Router } from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { UserModel } from "../models/UserModel";
+import router from "./farmRouter";
 
-//create router
-const router = Router();
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  console.log("Login attempt with:", email, password); // Debug log
 
-//create users routes
-
-// POST /
-router.post("/", async (req, res) => {
   try {
-    //extract request body
-    const { body } = req;
-    const savedUsers = await UserModel.insertMany(
-      Array.isArray(body) ? body : [body]
-    );
-    // //crerate new user
-    // const newUser = new UserModel(body);
-    // //save the newUser
-    // const savedUser = await newUser.save();
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password required" });
+    }
 
-    if (!savedUsers) throw "Cound not insert";
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
 
-    //send res to the client
-    res.status(201).json({ success: true, data: savedUsers });
-  } catch (error: any) {
-    res.status(500).json({ error: "Error " + error.message });
-  }
-});
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
 
-// GET /
-router.get("/", async (req, res) => {
-  try {
-    const fetchedUsers = await UserModel.find({});
-    if (!fetchedUsers || !fetchedUsers.length)
-      res.status(404).json({ success: false, data: [] });
-    res.json({ success: true, data: fetchedUsers });
-  } catch (error: any) {
-    res.status(500).json({ error: "Error " + error.message });
-  }
-});
-
-// GET /:id
-router.get("/:id", async (req, res) => {
-  const {
-    params: { id },
-  } = req;
-  try {
-    //get 1 user
-    const fetchedUser = await UserModel.findById(id);
-
-    if (!fetchedUser) res.status(404).json({ success: false, data: null });
-
-    //send res to the client
-    res.status(200).json({ success: true, data: fetchedUser });
-  } catch (error: any) {
-    res.status(500).json({ error: "Error " + error.message });
-  }
-});
-
-// PUT /:id
-router.put("/:id", async (req, res) => {
-  const {
-    body,
-    params: { id },
-  } = req;
-  try {
-    //update user
-    const updatedUser =
-     await UserModel.findByIdAndUpdate(id, body, {
-      new: true,
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
+      expiresIn: "1h",
     });
 
-    if (!updatedUser)
-      res.status(404).json({ success: false, error: "User not found" });
-
-    //send res to the client
-    res.status(200).json({ success: true, data: updatedUser });
+    res.json({ success: true, token, user });
   } catch (error: any) {
-    res.status(500).json({ error: "Error " + error.message });
+    res.status(500).json({ error: "Server error: " + error.message });
   }
 });
-
-// DELETE /:id
-router.delete("/:id", async (req, res) => {
-  const {
-    params: { id },
-  } = req;
-  try {
-    //delete user by id
-    const deletedUser = await UserModel.findByIdAndDelete(id);
-
-    if (!deletedUser)
-      res.status(404).json({ success: false, error: "User not found" });
-
-    //send res to the client
-    res.status(200).json({ success: true, data: deletedUser });
-  } catch (error: any) {
-    res.status(500).json({ error: "Error " + error.message });
-  }
-});
-
 export { router as userRouter };

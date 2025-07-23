@@ -1,5 +1,4 @@
 import { WorkersActivitiesSection } from "./WorkersActivitiesSection";
-import { YieldsSection } from "./YieldsSection";
 import { PlantingRecordsSection } from "./PlantingRecordsSection";
 import { FertilizerApplicationSection } from "./FertilizerApplicationSection";
 import { PesticideHerbicideSection } from "./PesticideHerbicideSection";
@@ -24,7 +23,7 @@ export function FarmRecords() {
 
       {/* Standard Record Sections */}
       <WorkersActivitiesSection />
-      <YieldsSection />
+      <YieldRecordsSection />
 
       {/* Detailed Records */}
       <PlantingRecordsSection />
@@ -32,10 +31,8 @@ export function FarmRecords() {
       <PesticideHerbicideSection />
       <PruningStumpingSection />
       <IrrigationMulchingSection />
-      <WorkersActivitiesSection />
       <HarvestRecordsSection />
       <ProcessingRecordsSection />
-      <YieldRecordsSection />
       <StorageRecordsSection />
       <SalesDeliverySection />
       <GeneralNotesSection />
